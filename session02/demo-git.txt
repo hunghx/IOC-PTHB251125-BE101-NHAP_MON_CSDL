@@ -1,0 +1,16 @@
+Git Local :
+-- Lần đầu
+git init : khởi tạo 
+git add . : thêm tất cả các file trong thưc mục hiện tại
+git commit -m "Nội dung commit"
+
+
+Git Remote : 
+git remote add origin <link github> 
+git branch -M main : tạo nhánh mới
+git push origin -u main : đẩy code lên github
+
+-- Lần sau : cập nhật
+git add .
+git commit -m "Nội dung commit"
+git push 
