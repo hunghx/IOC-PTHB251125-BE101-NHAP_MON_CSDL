@@ -86,4 +86,81 @@ BEGIN
 END;
 $$;
 
+-- tham số ra
+-- Tạo mới khách hàng và trả ra giá trị ID tự tăng của khách hàng đó
+
+CREATE OR REPLACE PROCEDURE proc_inset_customer(full_name_in varchar(100),phone_in varchar(20), address_in text, out new_cus_id int)
+    language plpgsql
+AS $$ -- đổi dấu keets thúc câu lệnh thành đô la
+-- variable declaration
+BEGIN
+    insert into customers(full_name, phone, address)
+    values (full_name_in,phone_in,address_in);
+    --
+    select distinct lastval() into  new_cus_id from customers;
+-- stored procedure body
+END;
+$$;
+
 call proc_create_order('ABC', '0983474386','Hanoi',4,10);
+
+call proc_inset_customer('Nguyen thi b','0989324865','Ha noi',null); -- truyên tham số out là null
+
+
+--- Câu lệnh điều kiên IF
+
+CREATE OR REPLACE PROCEDURE proc_check_name(full_name_in varchar(100))
+    language plpgsql
+AS $$ -- đổi dấu keets thúc câu lệnh thành đô la
+-- variable declaration
+BEGIN
+    IF length(full_name_in) >=8 THEN
+        -- khối lệnh nếu điều kiện đúng
+        Raise notice 'Ten hơp le , có đủ từ 8 kí tu tro len';
+    else
+        raise notice  'Ten khong hop le , vui long thu lại';
+    end if;
+
+
+    -- Thủ tục ko áp dụng cho truy vấn select
+-- stored procedure body
+END;
+$$;
+
+call proc_check_name('abc');
+
+-- Vong lặp FOR
+CREATE OR REPLACE PROCEDURE proc_for_loop()
+    language plpgsql
+AS $$ -- đổi dấu keets thúc câu lệnh thành đô la
+-- variable declaration
+    declare cus_record RECORD;
+BEGIN
+    for cus_record IN
+        select full_name, phone from customers
+    LOOP
+    raise NOTICE 'Name : %  - Phone : %' ,cus_record.full_name, cus_record.phone;
+        end loop;
+    -- Thủ tục ko áp dụng cho truy vấn select
+-- stored procedure body
+END;
+$$;
+
+call proc_for_loop();
+
+CREATE OR REPLACE PROCEDURE count_down(time_in int)
+    language plpgsql
+AS $$ -- đổi dấu keets thúc câu lệnh thành đô la
+-- variable declaration
+BEGIN
+    while time_in > 0
+    loop
+        raise notice '%',time_in;
+        time_in:= time_in-1;
+        end loop;
+    -- Thủ tục ko áp dụng cho truy vấn select
+-- stored procedure body
+END;
+$$;
+
+call count_down(100);
